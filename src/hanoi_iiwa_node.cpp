@@ -82,7 +82,7 @@ public:
     const Eigen::Affine3d& end_effector_state = robot_state_.getGlobalLinkTransform(move_group_.getEndEffectorLink());
     Eigen::Vector3d t(end_effector_state.translation());
     Eigen::Quaterniond q(end_effector_state.rotation());
-    base_pose_.header.frame_id = "iiwa_link_0";
+    base_pose_.header.frame_id = "world";
     base_pose_.pose.position.x = t[0];
     base_pose_.pose.position.y = t[1];
     base_pose_.pose.position.z = t[2];
@@ -169,27 +169,39 @@ int main(int argc, char **argv)
   hanoi_robot.gripper.setRawVelocity(255);
   hanoi_robot.gripper.setRawForce(50);
 
-  hanoi_robot.moveToBasePose();
-  
-  hanoi_robot.gripper.setRawPosition(0);
-  hanoi_robot.gripper.write();
-  ros::Duration(2.5).sleep();
-
-  hanoi_robot.moveToBaseRelativePosition(0.15, 0.0, 0.0, false);
-  
+  ROS_INFO("Closing gripper!");
   hanoi_robot.gripper.setRawPosition(255);
   hanoi_robot.gripper.write();
   ros::Duration(2.5).sleep();
 
-  hanoi_robot.moveToBaseRelativePosition(0.15, 0.0, 0.4, false);
-  hanoi_robot.moveToBaseRelativePosition(0.15, 0.4, 0.4, false);
-  hanoi_robot.moveToBaseRelativePosition(0.15, 0.4, 0.0, false);
-
+  ROS_INFO("Moving to base pose!");
+  hanoi_robot.moveToBasePose();
+  
+  ROS_INFO("Opening gripper!");
   hanoi_robot.gripper.setRawPosition(0);
   hanoi_robot.gripper.write();
   ros::Duration(2.5).sleep();
 
-  hanoi_robot.moveToBaseRelativePosition(0.0, 0.4, 0.0, false);
+  ROS_INFO("Moving forward!");
+  hanoi_robot.moveToBaseRelativePosition(0.1, 0.0, 0.0, false);
+  
+  ROS_INFO("Closing gripper!");
+  hanoi_robot.gripper.setRawPosition(255);
+  hanoi_robot.gripper.write();
+  ros::Duration(2.5).sleep();
+
+  ROS_INFO("Moving to different position!");
+  hanoi_robot.moveToBaseRelativePosition(0.1, 0.0, 0.2, false);
+  hanoi_robot.moveToBaseRelativePosition(0.1, 0.2, 0.2, false);
+  hanoi_robot.moveToBaseRelativePosition(0.1, 0.2, 0.0, false);
+
+  ROS_INFO("Opening gripper!");
+  hanoi_robot.gripper.setRawPosition(0);
+  hanoi_robot.gripper.write();
+  ros::Duration(2.5).sleep();
+
+  ROS_INFO("Moving backwards!");
+  hanoi_robot.moveToBaseRelativePosition(0.0, 0.2, 0.0, false);
 
   // Moving along cube corners
   // hanoi_robot.moveToBasePose();
