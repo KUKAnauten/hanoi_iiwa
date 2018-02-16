@@ -117,6 +117,26 @@ public:
     planAndMove(target_pose, std::string("relative pose"), approvalRequired);
   }
 
+  void moveToBaseRelativePose(double x, double y, double z, double roll, double pitch, double yaw, bool approvalRequired) {
+    tf::Quaternion base_quaternion(base_pose_.pose.orientation.x, base_pose_.pose.orientation.y, base_pose_.pose.orientation.z, base_pose_.pose.orientation.w);
+    tf::Quaternion next_quaternion;// = base_quaternion;
+    next_quaternion.setEuler(yaw, pitch, roll);
+    tf::Quaternion result_quaternion = next_quaternion * base_quaternion;
+    result_quaternion.normalize();
+
+    geometry_msgs::PoseStamped target_pose = base_pose_;
+    target_pose.pose.position.x += x;
+    target_pose.pose.position.y += y;
+    target_pose.pose.position.z += z;
+    target_pose.pose.orientation.x = result_quaternion.getX();
+    target_pose.pose.orientation.y = result_quaternion.getY();
+    target_pose.pose.orientation.z = result_quaternion.getZ();
+    target_pose.pose.orientation.w = result_quaternion.getW();
+
+    planAndMove(target_pose, std::string("relative pose"), approvalRequired);
+  }
+
+
   void moveToBaseRelativePosition(const geometry_msgs::Point relativePosition, bool approvalRequired) {
     geometry_msgs::PoseStamped target_pose = base_pose_;
     target_pose.pose.position.x += relativePosition.x;
@@ -191,9 +211,12 @@ int main(int argc, char **argv)
   ros::Duration(2.5).sleep();
 
   ROS_INFO("Moving to different position!");
-  hanoi_robot.moveToBaseRelativePosition(0.1, 0.0, 0.2, false);
-  hanoi_robot.moveToBaseRelativePosition(0.1, 0.2, 0.2, false);
-  hanoi_robot.moveToBaseRelativePosition(0.1, 0.2, 0.0, false);
+  // hanoi_robot.moveToBaseRelativePosition(0.1, 0.0, 0.2, false);
+  // hanoi_robot.moveToBaseRelativePosition(0.1, 0.2, 0.2, false);
+  // hanoi_robot.moveToBaseRelativePosition(0.1, 0.2, 0.0, false);
+  hanoi_robot.moveToBaseRelativePose(0.1, 0.0, 0.2, 0,0,0, false);
+  hanoi_robot.moveToBaseRelativePose(0.1, 0.2, 0.2, 0,-1.0,0,false);
+  hanoi_robot.moveToBaseRelativePose(0.1, 0.2, 0.0, 0,0,1,false);
 
   ROS_INFO("Opening gripper!");
   hanoi_robot.gripper.setRawPosition(0);
