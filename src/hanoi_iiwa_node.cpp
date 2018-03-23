@@ -44,6 +44,7 @@ a6: -1.34951746464
 a7: 0.104109719396
 */
 
+#include <cassert>
 #include <iimoveit/robot_interface.h>
 #include <tf/LinearMath/Quaternion.h>
 #include <robotiq_s_model_control/s_model_msg_client.h>
@@ -56,15 +57,10 @@ namespace hanoi {
 class HanoiRobot : public iimoveit::RobotInterface {
 private:
   boost::shared_ptr<robotiq_s_model_control::SModelMsgClient> sModelMsgClient_;
-  std::vector<double> base_pose_jointspace_;
-  geometry_msgs::PoseStamped base_pose_;
-  geometry_msgs::PoseStamped left_tower_relPose_;
-  geometry_msgs::PoseStamped right_tower_relPose_;
-  geometry_msgs::PoseStamped center_tower_relPose_;
+  std::vector<double> tower_poses_jointSpace_[3];
+  geometry_msgs::PoseStamped tower_poses_[3];
+  int tower_nSlices_[3];
   double slice_height_;
-  int nslices_left_;
-  int nslices_center_;
-  int nslices_right_;
   bool grapping_;
 
 
@@ -72,87 +68,16 @@ public:
   robotiq_s_model_control::SModelAPI gripper;
 
 
-  HanoiRobot(ros::NodeHandle* node_handle, const std::string& planning_group, const std::string& base_frame)
-      :  RobotInterface(node_handle, planning_group, base_frame),
-         base_pose_jointspace_{-0.753815352917, 1.1734058857, 0.112757593393, -1.68315970898, -0.736448764801, -1.34951746464, 0.104109719396},
+  HanoiRobot(ros::NodeHandle* node_handle, const std::string& planning_group, const std::vector<double> base_pose, int tow1_nSlices, double slice_height)
+      :  RobotInterface(node_handle, planning_group, base_pose),
+         tower_poses_jointSpace_{base_pose, base_pose, base_pose},
+         tower_nSlices_{tow1_nSlices, 0, 0},
+         slice_height_(slice_height),
          sModelMsgClient_(new robotiq_s_model_control::SModelMsgClient(*node_handle)),
          gripper(sModelMsgClient_) {
-    // Get endeffector pose from joint space goal
-    robot_state_.setJointGroupPositions(joint_model_group_, base_pose_jointspace_);
-    const Eigen::Affine3d& end_effector_state = robot_state_.getGlobalLinkTransform(move_group_.getEndEffectorLink());
-    Eigen::Vector3d t(end_effector_state.translation());
-    Eigen::Quaterniond q(end_effector_state.rotation());
-    base_pose_.header.frame_id = "world";
-    base_pose_.pose.position.x = t[0];
-    base_pose_.pose.position.y = t[1];
-    base_pose_.pose.position.z = t[2];
-    base_pose_.pose.orientation.x = q.x();
-    base_pose_.pose.orientation.y = q.y();
-    base_pose_.pose.orientation.z = q.z();
-    base_pose_.pose.orientation.w = q.w();
-
-    // Reset robot state to current state
-    updateRobotState();
-  }
-
-  void moveToBasePose() {
-    planAndMove(base_pose_jointspace_, std::string("base_pose_jointspace"), true);
-  }
-
-  void moveToBaseRelativePose(const geometry_msgs::Pose& relativePose, bool approvalRequired) {
-    tf::Quaternion base_quaternion(base_pose_.pose.orientation.x, base_pose_.pose.orientation.y, base_pose_.pose.orientation.z, base_pose_.pose.orientation.w);
-    tf::Quaternion next_quaternion(relativePose.orientation.x, relativePose.orientation.y, relativePose.orientation.z, relativePose.orientation.w);
-    tf::Quaternion result_quaternion = next_quaternion * base_quaternion;
-    result_quaternion.normalize();
-
-    geometry_msgs::PoseStamped target_pose = base_pose_;
-    target_pose.pose.position.x += relativePose.position.x;
-    target_pose.pose.position.y += relativePose.position.y;
-    target_pose.pose.position.z += relativePose.position.z;
-    target_pose.pose.orientation.x = result_quaternion.getX();
-    target_pose.pose.orientation.y = result_quaternion.getY();
-    target_pose.pose.orientation.z = result_quaternion.getZ();
-    target_pose.pose.orientation.w = result_quaternion.getW();
-
-    planAndMove(target_pose, std::string("relative pose"), approvalRequired);
-  }
-
-  void moveToBaseRelativePose(double x, double y, double z, double roll, double pitch, double yaw, bool approvalRequired) {
-    tf::Quaternion base_quaternion(base_pose_.pose.orientation.x, base_pose_.pose.orientation.y, base_pose_.pose.orientation.z, base_pose_.pose.orientation.w);
-    tf::Quaternion next_quaternion;// = base_quaternion;
-    next_quaternion.setEuler(yaw, pitch, roll);
-    tf::Quaternion result_quaternion = next_quaternion * base_quaternion;
-    result_quaternion.normalize();
-
-    geometry_msgs::PoseStamped target_pose = base_pose_;
-    target_pose.pose.position.x += x;
-    target_pose.pose.position.y += y;
-    target_pose.pose.position.z += z;
-    target_pose.pose.orientation.x = result_quaternion.getX();
-    target_pose.pose.orientation.y = result_quaternion.getY();
-    target_pose.pose.orientation.z = result_quaternion.getZ();
-    target_pose.pose.orientation.w = result_quaternion.getW();
-
-    planAndMove(target_pose, std::string("relative pose"), approvalRequired);
-  }
-
-
-  void moveToBaseRelativePosition(const geometry_msgs::Point relativePosition, bool approvalRequired) {
-    geometry_msgs::PoseStamped target_pose = base_pose_;
-    target_pose.pose.position.x += relativePosition.x;
-    target_pose.pose.position.y += relativePosition.y;
-    target_pose.pose.position.z += relativePosition.z;
-
-    planAndMove(target_pose, std::string("relative pose"), approvalRequired);
-  }
-
-  void moveToBaseRelativePosition(double x, double y, double z, bool approvalRequired) {
-    geometry_msgs::PoseStamped target_pose = base_pose_;
-    target_pose.pose.position.x += x;
-    target_pose.pose.position.y += y;
-    target_pose.pose.position.z += z;
-
-    planAndMove(target_pose, std::string("relative pose"), approvalRequired);
+    tower_poses_[0] = poseFromJointAngles(base_pose);
+    tower_poses_[1] = poseFromJointAngles(base_pose);
+    tower_poses_[2] = poseFromJointAngles(base_pose);
   }
 
   // For this button to work, the configuration has to be uploaded to the parameter server via a launch file like 'iiwa_stack/iiwa_ros/launch/toolbar_example.launch'.
@@ -165,14 +90,95 @@ public:
     }
   }
 
-  void grabFromLeftTower() {}
-  void putToLeftTower() {}
-  void grabFromCenterTower() {}
-  void putToCenterTower() {}
-  void grabFromRightTower() {}
-  void putToRightTower(){}
+  void setTowerPose(int index, const std::vector<double>& pose) {
+    assert(index >= 0 && index <= 2);
+    tower_poses_jointSpace_[index] = pose;
+    tower_poses_[index] = poseFromJointAngles(pose);
+  }
+  
+  void gripperInit() {
+    gripper.setInitialization(INIT_ACTIVATION);
+    gripper.setGraspingMode(GRASP_PINCH);
+    gripper.setActionMode(ACTION_GO);
+    gripper.setRawVelocity(255);
+    gripper.setRawForce(50);
+    gripper.setRawPosition(0);
+    gripper.write();
+    waitForGripper();
+  }
+
+  void waitForGripper() {
+    ros::Duration(0.1).sleep();
+    do {
+      //std::cout << (!gripper.isInitialized() ? "Not initialized!" : "") << std::endl;
+      //std::cout << (!gripper.isReady() ? "Not ready!" : "") << std::endl;
+      //std::cout << (gripper.isMoving() ? "Still Moving!" : "") << std::endl;
+      gripper.read();
+      ros::Duration(0.1).sleep();
+    } while (ros::ok() && (!gripper.isInitialized() || !gripper.isReady() || gripper.isMoving()));
+    //std::cout << "Done Waiting!" << std::endl;
+    ros::Duration(0.1).sleep();
+  }
+
+  void gripperClose() {
+    gripper.setRawPosition(90);
+    gripper.write();
+    waitForGripper();
+  }
+
+  void gripperOpen() {
+    gripper.setRawPosition(45);
+    gripper.write();
+    waitForGripper();
+  }
+
+  void moveSlice(int from, int to) {
+    assert(from >= 0 && from <= 2);
+    assert(to >= 0 && to <= 2);
+
+    std::vector<geometry_msgs::Pose> waypoints;
+    geometry_msgs::Pose pose_above_from = tower_poses_[from].pose;
+    pose_above_from.position.z += 0.13;
+    waypoints.push_back(pose_above_from);
+    geometry_msgs::Pose pose_slice_from = tower_poses_[from].pose;
+    pose_slice_from.position.z += slice_height_ * --tower_nSlices_[from];
+    waypoints.push_back(pose_slice_from);
+    moveAlongCartesianPathInWorldCoords(waypoints, 0.01, 0.3, true);
+
+    gripperClose();
+
+    waypoints.clear();
+    waypoints.push_back(pose_above_from);
+    geometry_msgs::Pose pose_to = tower_poses_[to].pose;
+    pose_to.position.z += 0.13;
+    waypoints.push_back(pose_to);
+    pose_to.position.z -= 0.03;
+    waypoints.push_back(pose_to);
+    moveAlongCartesianPathInWorldCoords(waypoints, 0.01, 0.3, true);
+
+    gripperOpen();
+
+    pose_to.position.z += 0.03;
+    planAndMove(pose_to, true);
+
+
+    tower_nSlices_[to] += 1;
+  }
+
+  void moveTower(int height, int from, int to, int with) {
+    assert(from >= 0 && from <= 2);
+    assert(to >= 0 && to <= 2);
+    assert(with >= 0 && with <= 2);
+
+    if (height >= 1) {
+      moveTower(height-1, from, with, to);
+      moveSlice(from, to);
+      moveTower(height-1, with, to, from);
+    }
+  }
 };
 } // namespace hanoi
+
 
 int main(int argc, char **argv)
 {
@@ -181,8 +187,34 @@ int main(int argc, char **argv)
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
-  hanoi::HanoiRobot hanoi_robot(&node_handle, "manipulator", "world");
+  std::vector<double> base_pose_jointSpace{-0.30564, 0.37769, 0.59875, -1.14323, -0.19265, 1.62531, -0.65100};
+  std::vector<double> tow0_pose_jointSpace{-0.31814, 0.69113, -0.27301, -1.19496, 0.20649, 1.31196, -1.36038};
+  std::vector<double> tow1_pose_jointSpace{-0.26360, 0.51776, 0.45096, -1.51083, -0.20304, 1.14264, -0.80443};
+  std::vector<double> tow2_pose_jointSpace{0.37647, 0.61587, 0.12677, -1.30368, 0.05558, 1.18335, -0.50994};
 
+  hanoi::HanoiRobot hanoi_robot(&node_handle, "manipulator", base_pose_jointSpace, 3, 0.01);
+  hanoi_robot.setTowerPose(0, tow0_pose_jointSpace);
+  hanoi_robot.setTowerPose(1, tow1_pose_jointSpace);
+  hanoi_robot.setTowerPose(2, tow2_pose_jointSpace);
+  hanoi_robot.planAndMoveToBasePose();
+  hanoi_robot.gripperInit();
+
+  hanoi_robot.moveTower(3, 0, 2, 1);
+
+  /*
+  geometry_msgs::Pose start_pose = hanoi_robot.getBasePose().pose;
+  std::vector<geometry_msgs::Pose> waypoints;
+  start_pose.position.z -= 0.12;
+  waypoints.push_back(start_pose);
+  start_pose.position.x += 0.12;
+  waypoints.push_back(start_pose);
+  start_pose.position.y -= 0.12;
+  //start_pose.position.z -= 0.12;
+  waypoints.push_back(start_pose);
+  hanoi_robot.moveAlongCartesianPathInWorldCoords(waypoints, 0.01, 0.3, true);
+  hanoi_robot.planAndMoveInBasePoseCoordSys(0.0, 0.0, 0.05);
+
+  /*
   hanoi_robot.gripper.setInitialization(INIT_ACTIVATION);
   hanoi_robot.gripper.setActionMode(ACTION_GO);
   // Setting "raw" values [0, 255] instead of mm/s for velocity, N for force, etc.
@@ -195,7 +227,7 @@ int main(int argc, char **argv)
   ros::Duration(2.5).sleep();
 
   ROS_INFO("Moving to base pose!");
-  hanoi_robot.moveToBasePose();
+  hanoi_robot.planAndMoveToBasePose();
   
   ROS_INFO("Opening gripper!");
   hanoi_robot.gripper.setRawPosition(0);
@@ -203,7 +235,7 @@ int main(int argc, char **argv)
   ros::Duration(2.5).sleep();
 
   ROS_INFO("Moving forward!");
-  hanoi_robot.moveToBaseRelativePosition(0.1, 0.0, 0.0, false);
+  hanoi_robot.planAndMoveRelativeToBasePose(0.1, 0.0, 0.0, false);
   
   ROS_INFO("Closing gripper!");
   hanoi_robot.gripper.setRawPosition(255);
@@ -211,12 +243,12 @@ int main(int argc, char **argv)
   ros::Duration(2.5).sleep();
 
   ROS_INFO("Moving to different position!");
-  // hanoi_robot.moveToBaseRelativePosition(0.1, 0.0, 0.2, false);
-  // hanoi_robot.moveToBaseRelativePosition(0.1, 0.2, 0.2, false);
-  // hanoi_robot.moveToBaseRelativePosition(0.1, 0.2, 0.0, false);
-  hanoi_robot.moveToBaseRelativePose(0.1, 0.0, 0.2, 0,0,0, false);
-  hanoi_robot.moveToBaseRelativePose(0.1, 0.2, 0.2, 0,-1.0,0,false);
-  hanoi_robot.moveToBaseRelativePose(0.1, 0.2, 0.0, 0,0,1,false);
+  // hanoi_robot.planAndMoveRelativeToBasePose(0.1, 0.0, 0.2, false);
+  // hanoi_robot.planAndMoveRelativeToBasePose(0.1, 0.2, 0.2, false);
+  // hanoi_robot.planAndMoveRelativeToBasePose(0.1, 0.2, 0.0, false);
+  hanoi_robot.planAndMoveRelativeToBasePose(0.1, 0.0, 0.2, 0,0,0, false);
+  hanoi_robot.planAndMoveRelativeToBasePose(0.1, 0.2, 0.2, 0,-1.0,0,false);
+  hanoi_robot.planAndMoveRelativeToBasePose(0.1, 0.2, 0.0, 0,0,1,false);
 
   ROS_INFO("Opening gripper!");
   hanoi_robot.gripper.setRawPosition(0);
@@ -224,19 +256,20 @@ int main(int argc, char **argv)
   ros::Duration(2.5).sleep();
 
   ROS_INFO("Moving backwards!");
-  hanoi_robot.moveToBaseRelativePosition(0.0, 0.2, 0.0, false);
+  hanoi_robot.planAndMoveRelativeToBasePose(0.0, 0.2, 0.0, false);
+  */
 
   // Moving along cube corners
-  // hanoi_robot.moveToBasePose();
+  // hanoi_robot.planAndMoveToBasePose();
   // double sdl = 0.15;
-  // hanoi_robot.moveToBaseRelativePosition(0.0, sdl, 0.0, true);
-  // hanoi_robot.moveToBaseRelativePosition(sdl, sdl, 0.0, false);
-  // hanoi_robot.moveToBaseRelativePosition(sdl, 0.0, 0.0, false);
-  // hanoi_robot.moveToBaseRelativePosition(sdl, 0.0, sdl, false);
-  // hanoi_robot.moveToBaseRelativePosition(0.0, 0.0, sdl, false);
-  // hanoi_robot.moveToBaseRelativePosition(0.0, sdl, sdl, false);
-  // hanoi_robot.moveToBaseRelativePosition(sdl, sdl, sdl, false);
-  // hanoi_robot.moveToBaseRelativePosition(0.0, 0.0, 0.0, false);
+  // hanoi_robot.planAndMoveRelativeToBasePose(0.0, sdl, 0.0, true);
+  // hanoi_robot.planAndMoveRelativeToBasePose(sdl, sdl, 0.0, false);
+  // hanoi_robot.planAndMoveRelativeToBasePose(sdl, 0.0, 0.0, false);
+  // hanoi_robot.planAndMoveRelativeToBasePose(sdl, 0.0, sdl, false);
+  // hanoi_robot.planAndMoveRelativeToBasePose(0.0, 0.0, sdl, false);
+  // hanoi_robot.planAndMoveRelativeToBasePose(0.0, sdl, sdl, false);
+  // hanoi_robot.planAndMoveRelativeToBasePose(sdl, sdl, sdl, false);
+  // hanoi_robot.planAndMoveRelativeToBasePose(0.0, 0.0, 0.0, false);
   
   ros::shutdown();
   return 0;
