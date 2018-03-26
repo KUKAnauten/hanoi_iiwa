@@ -94,6 +94,7 @@ public:
     assert(index >= 0 && index <= 2);
     tower_poses_jointSpace_[index] = pose;
     tower_poses_[index] = poseFromJointAngles(pose);
+    //tower_poses_[index].pose.position.z -= 0.103;
   }
   
   void gripperInit() {
@@ -101,7 +102,7 @@ public:
     gripper.setGraspingMode(GRASP_PINCH);
     gripper.setActionMode(ACTION_GO);
     gripper.setRawVelocity(255);
-    gripper.setRawForce(50);
+    gripper.setRawForce(1);
     gripper.setRawPosition(0);
     gripper.write();
     waitForGripper();
@@ -110,13 +111,12 @@ public:
   void waitForGripper() {
     ros::Duration(0.1).sleep();
     do {
-      //std::cout << (!gripper.isInitialized() ? "Not initialized!" : "") << std::endl;
-      //std::cout << (!gripper.isReady() ? "Not ready!" : "") << std::endl;
-      //std::cout << (gripper.isMoving() ? "Still Moving!" : "") << std::endl;
+      if (!gripper.isInitialized()) std::cout <<  "Not initialized!" << std::endl;
+      if (!gripper.isReady()) std::cout << "Not ready!" << std::endl;
+      if (gripper.isMoving()) std::cout << "Still Moving!" << std::endl;
       gripper.read();
       ros::Duration(0.1).sleep();
     } while (ros::ok() && (!gripper.isInitialized() || !gripper.isReady() || gripper.isMoving()));
-    //std::cout << "Done Waiting!" << std::endl;
     ros::Duration(0.1).sleep();
   }
 
@@ -132,37 +132,81 @@ public:
     waitForGripper();
   }
 
+  void checkPoses() {
+    for (int i = 0; i < 3; ++i) {
+      geometry_msgs::PoseStamped pose = tower_poses_[i];
+      pose.pose.position.z += 0.13;
+      planAndMove(pose, true);
+
+      pose.pose.position.z -= 0.13;
+      planAndMove(pose, true);
+
+      pose.pose.position.z += 0.13;
+      planAndMove(pose, true);
+    }
+  }
+
   void moveSlice(int from, int to) {
     assert(from >= 0 && from <= 2);
     assert(to >= 0 && to <= 2);
 
+    
     std::vector<geometry_msgs::Pose> waypoints;
     geometry_msgs::Pose pose_above_from = tower_poses_[from].pose;
-    pose_above_from.position.z += 0.13;
-    waypoints.push_back(pose_above_from);
-    geometry_msgs::Pose pose_slice_from = tower_poses_[from].pose;
-    pose_slice_from.position.z += slice_height_ * --tower_nSlices_[from];
-    waypoints.push_back(pose_slice_from);
-    moveAlongCartesianPathInWorldCoords(waypoints, 0.01, 0.3, true);
+    pose_above_from.position.z += 0.133;
+    for (int i = 0; i < (13 - tower_nSlices_[from] + 1); ++i) {
+      pose_above_from.position.z -= 0.01;
+      waypoints.push_back(pose_above_from);
+    }
+    moveAlongCartesianPathInWorldCoords(waypoints, 0.01, 0, true, false);
 
     gripperClose();
+    tower_nSlices_[from]--;
 
-    waypoints.clear();
-    waypoints.push_back(pose_above_from);
+    std::reverse(waypoints.begin(), waypoints.end());
+
     geometry_msgs::Pose pose_to = tower_poses_[to].pose;
-    pose_to.position.z += 0.13;
+    pose_to.position.z += 0.133;
     waypoints.push_back(pose_to);
-    pose_to.position.z -= 0.03;
-    waypoints.push_back(pose_to);
-    moveAlongCartesianPathInWorldCoords(waypoints, 0.01, 0.3, true);
+    for (int i = 0; i < (13 - tower_nSlices_[to]); ++i) {
+      pose_to.position.z -= 0.01;
+      waypoints.push_back(pose_to);
+    }
+    moveAlongCartesianPathInWorldCoords(waypoints, 0.01, 0, true, false);
 
     gripperOpen();
 
-    pose_to.position.z += 0.03;
-    planAndMove(pose_to, true);
+    pose_to.position.z += 0.13 - tower_nSlices_[to] * slice_height_;
+    planAndMove(pose_to, false);
 
+    tower_nSlices_[to]++;
 
-    tower_nSlices_[to] += 1;
+    /*
+    geometry_msgs::PoseStamped pose = tower_poses_[from];
+    pose.pose.position.z += 0.13;
+    planAndMove(pose, false);
+
+    pose.pose.position.z = tower_poses_[to].pose.position.z + slice_height_ * (--tower_nSlices_[from]);
+    planAndMove(pose, false);
+
+    gripperClose();
+
+    pose = tower_poses_[from];
+    pose.pose.position.z += 0.13;
+    planAndMove(pose, false);
+
+    pose = tower_poses_[to];
+    pose.pose.position.z += 0.13;
+    planAndMove(pose, false);
+
+    pose.pose.position.z = tower_poses_[to].pose.position.z + slice_height_ * tower_nSlices_[to]++;
+    planAndMove(pose, false);
+
+    gripperOpen();
+
+    pose.pose.position.z = tower_poses_[to].pose.position.z + 0.13;
+    planAndMove(pose, false);
+    */
   }
 
   void moveTower(int height, int from, int to, int with) {
@@ -174,6 +218,15 @@ public:
       moveTower(height-1, from, with, to);
       moveSlice(from, to);
       moveTower(height-1, with, to, from);
+    }
+    else if (height < 0) {
+      for (int i = 0; i < 3; ++i) {
+        geometry_msgs::PoseStamped pose_above_from = tower_poses_[i];
+        pose_above_from.pose.position.z += 0.15;
+        planAndMove(pose_above_from, true);
+        planAndMove(tower_poses_[i], true);
+        planAndMove(pose_above_from, true);
+      }
     }
   }
 };
@@ -188,17 +241,17 @@ int main(int argc, char **argv)
   spinner.start();
 
   std::vector<double> base_pose_jointSpace{-0.30564, 0.37769, 0.59875, -1.14323, -0.19265, 1.62531, -0.65100};
-  std::vector<double> tow0_pose_jointSpace{-0.31814, 0.69113, -0.27301, -1.19496, 0.20649, 1.31196, -1.36038};
-  std::vector<double> tow1_pose_jointSpace{-0.26360, 0.51776, 0.45096, -1.51083, -0.20304, 1.14264, -0.80443};
-  std::vector<double> tow2_pose_jointSpace{0.37647, 0.61587, 0.12677, -1.30368, 0.05558, 1.18335, -0.50994};
+  std::vector<double> tow0_pose_jointSpace{-0.782207548618, 0.699450016022, 0.556021511555, -1.25907731056, -0.363562077284, 1.28127717972, -1.78963983059};
+  std::vector<double> tow1_pose_jointSpace{-0.304185926914, 0.562530577183, 0.556022703648, -1.47326624393, -0.308449208736, 1.19399666786, -1.26301240921};
+  std::vector<double> tow2_pose_jointSpace{0.133967101574, 0.697635769844, 0.555947721004, -1.26097989082, -0.362120121717, 1.28161561489, -0.873358488083};
 
   hanoi::HanoiRobot hanoi_robot(&node_handle, "manipulator", base_pose_jointSpace, 3, 0.01);
   hanoi_robot.setTowerPose(0, tow0_pose_jointSpace);
   hanoi_robot.setTowerPose(1, tow1_pose_jointSpace);
   hanoi_robot.setTowerPose(2, tow2_pose_jointSpace);
+  //hanoi_robot.checkPoses();
   hanoi_robot.planAndMoveToBasePose();
   hanoi_robot.gripperInit();
-
   hanoi_robot.moveTower(3, 0, 2, 1);
 
   /*
@@ -257,6 +310,14 @@ int main(int argc, char **argv)
 
   ROS_INFO("Moving backwards!");
   hanoi_robot.planAndMoveRelativeToBasePose(0.0, 0.2, 0.0, false);
+
+
+  std::vector<double> tow0_pose_jointSpace{-0.31814, 0.69113, -0.27301, -1.19496, 0.20649, 1.31196, -1.36038};
+  std::vector<double> tow1_pose_jointSpace{-0.26360, 0.51776, 0.45096, -1.51083, -0.20304, 1.14264, -0.80443};
+  std::vector<double> tow2_pose_jointSpace{0.37647, 0.61587, 0.12677, -1.30368, 0.05558, 1.18335, -0.50994};
+
+
+
   */
 
   // Moving along cube corners
