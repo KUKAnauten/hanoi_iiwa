@@ -70,16 +70,6 @@ public:
     tower_poses_[2] = poseFromJointAngles(base_pose);
   }
 
-  // For this button to work, the configuration has to be uploaded to the parameter server via a launch file like 'iiwa_stack/iiwa_ros/launch/toolbar_example.launch'.
-  // Note: This has to be done BEFORE the Application is started via SmartPAD on the Sunrise Cabinet!
-  void buttonEventCallback(const std_msgs::String::ConstPtr& msg) {
-    ROS_INFO("Der Schmartie funktioniert: %s", msg->data.c_str());
-    if(msg->data == "pose_get_pressed") {
-      geometry_msgs::PoseStamped current_pose = getPose();
-      ROS_INFO("Current Position = (%f, %f, %f)", current_pose.pose.position.x, current_pose.pose.position.y, current_pose.pose.position.z);
-    }
-  }
-
   void setTowerPose(int index, const std::vector<double>& pose) {
     assert(index >= 0 && index <= 2);
     tower_poses_jointSpace_[index] = pose;
