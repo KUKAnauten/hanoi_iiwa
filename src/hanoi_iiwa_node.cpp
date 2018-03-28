@@ -34,16 +34,6 @@
 
 /* Author: Marcus Ebner */
 
-/*
-a1: -0.753815352917
-a2: 1.1734058857
-a3: 0.112757593393
-a4: -1.68315970898
-a5: -0.736448764801
-a6: -1.34951746464
-a7: 0.104109719396
-*/
-
 #include <cassert>
 #include <iimoveit/robot_interface.h>
 #include <tf/LinearMath/Quaternion.h>
@@ -102,9 +92,9 @@ public:
     }
   }
 
-  void setTowerPose(int index, const PoseStamped& pose) {
+  void setTowerPose(int index, const geometry_msgs::PoseStamped& pose) {
     assert(index >= 0 && index <= 2);
-    tower_poses_[index] = (pose);
+    tower_poses_[index] = pose;
 
     if (index == 1) {
       base_pose_ = tower_poses_[1];
@@ -131,9 +121,9 @@ public:
   void waitForGripper() {
     ros::Duration(0.1).sleep();
     do {
-      if (!gripper.isInitialized()) std::cout <<  "Not initialized!" << std::endl;
-      if (!gripper.isReady()) std::cout << "Not ready!" << std::endl;
-      if (gripper.isMoving()) std::cout << "Still Moving!" << std::endl;
+      //if (!gripper.isInitialized()) std::cout <<  "Not initialized!" << std::endl;
+      //if (!gripper.isReady()) std::cout << "Not ready!" << std::endl;
+      //if (gripper.isMoving()) std::cout << "Still Moving!" << std::endl;
       gripper.read();
       ros::Duration(0.1).sleep();
     } while (ros::ok() && (!gripper.isInitialized() || !gripper.isReady() || gripper.isMoving()));
@@ -263,17 +253,30 @@ int main(int argc, char **argv)
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
-  std::vector<double> base_pose_jointSpace{-0.30564, 0.37769, 0.59875, -1.14323, -0.19265, 1.62531, -0.65100};
-  std::vector<double> tow0_pose_jointSpace{-0.782207548618, 0.699450016022, 0.556021511555, -1.25907731056, -0.363562077284, 1.28127717972, -1.78963983059};
-  std::vector<double> tow1_pose_jointSpace{-0.304185926914, 0.562530577183, 0.556022703648, -1.47326624393, -0.308449208736, 1.19399666786, -1.26301240921};
-  std::vector<double> tow2_pose_jointSpace{0.133967101574, 0.697635769844, 0.555947721004, -1.26097989082, -0.362120121717, 1.28161561489, -0.873358488083};
+  std::vector<double> base_pose_jointSpace{0.0784100294113,  0.237325459719, -0.013680412434, -1.38437616825, 0.0258844885975, 1.46759164333, -0.739341557026};
+
+  geometry_msgs::PoseStamped tow0_pose;
+  tow0_pose.header.frame_id = "world";
+  tow0_pose.pose.position.x = 0.634;
+  tow0_pose.pose.position.y = -0.283443;
+  tow0_pose.pose.position.z = 0.961;
+  tow0_pose.pose.orientation.x = 0.963151;
+  tow0_pose.pose.orientation.y = 0.26867;
+  tow0_pose.pose.orientation.z = 0.00855197;
+  tow0_pose.pose.orientation.w = 0.0091728;
+
+  geometry_msgs::PoseStamped tow1_pose = tow0_pose;
+  tow1_pose.pose.position.y += 0.32;
+
+  geometry_msgs::PoseStamped tow2_pose = tow1_pose;
+  tow2_pose.pose.position.y += 0.32;
 
   hanoi::HanoiRobot hanoi_robot(&node_handle, "manipulator", base_pose_jointSpace, 3, 0.01);
-  hanoi_robot.setTowerPose(0, tow0_pose_jointSpace);
-  hanoi_robot.setTowerPose(1, tow1_pose_jointSpace);
-  hanoi_robot.setTowerPose(2, tow2_pose_jointSpace);
+  hanoi_robot.setTowerPose(0, tow0_pose);
+  hanoi_robot.setTowerPose(1, tow1_pose);
+  hanoi_robot.setTowerPose(2, tow2_pose);
   //hanoi_robot.checkPoses();
-  //std::cout << hanoi_robot.getPose().pose.position.z - hanoi_robot.getTowerPose(0).pose.position.z << std::endl;
+  //return 0;
   hanoi_robot.planAndMoveToBasePose();
   hanoi_robot.gripperInit();
   hanoi_robot.waitForApproval();
