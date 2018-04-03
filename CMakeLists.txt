@@ -8,6 +8,7 @@ add_compile_options(-std=c++11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   control_msgs
+  tf
   iimoveit
   iiwa_description
   iiwa_moveit
@@ -19,6 +20,9 @@ find_package(catkin REQUIRED COMPONENTS
   robotiq_ethercat
   roscpp
   rosmsg
+  #descartes_moveit
+  #descartes_trajectory
+  #descartes_planner  
 )
 
 ## System dependencies are found with CMake's conventions

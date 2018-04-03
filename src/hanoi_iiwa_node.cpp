@@ -36,9 +36,16 @@
 
 #include <cassert>
 #include <iimoveit/robot_interface.h>
-#include <tf/LinearMath/Quaternion.h>
 #include <robotiq_s_model_control/s_model_msg_client.h>
 #include <robotiq_s_model_control/s_model_api.h>
+
+//#include <descartes_moveit/moveit_state_adapter.h>
+//#include <descartes_trajectory/axial_symmetric_pt.h>
+//#include <descartes_trajectory/cart_trajectory_pt.h>
+//#include <descartes_planner/dense_planner.h>
+
+//typedef std::vector<descartes_core::TrajectoryPtPtr> TrajectoryVec;
+//typedef TrajectoryVec::const_iterator TrajectoryIter;
 
 using namespace robotiq;
 
@@ -68,6 +75,9 @@ public:
     tower_poses_[0] = poseFromJointAngles(base_pose);
     tower_poses_[1] = poseFromJointAngles(base_pose);
     tower_poses_[2] = poseFromJointAngles(base_pose);
+
+    std::string movegroup_name ="manipulator";
+    move_group_.setPlannerId(movegroup_name+"[RRTConnectkConfigDefault]");
   }
 
   void setTowerPose(int index, const std::vector<double>& pose) {
@@ -90,6 +100,10 @@ public:
       base_pose_ = tower_poses_[1];
       base_pose_.pose.position.z += 0.3;
     }
+  }
+
+  void addTowersToPlanningScene() {
+
   }
 
   geometry_msgs::PoseStamped getTowerPose(int index) {
@@ -232,6 +246,40 @@ public:
     planAndMoveAboveTower(approvalRequired);
     RobotInterface::planAndMoveToBasePose(approvalRequired);
   }
+
+  void moveInACoolAndCoodUpwardAndDownwardMotion() {
+    std::vector<geometry_msgs::Pose> waypoints;
+    geometry_msgs::Pose pose_above_from = tower_poses_[0].pose;
+    pose_above_from.position.z += 0.2;
+    for (int i = 0; i < 19; ++i) {
+      pose_above_from.position.z -= 0.01;
+      waypoints.push_back(pose_above_from);
+    }
+    gripperClose();
+
+    moveit_msgs::OrientationConstraint ocm;
+    ocm.link_name = move_group_.getEndEffectorLink();
+    geometry_msgs::PoseStamped current_pose = getPose();
+    ocm.header.frame_id = current_pose.header.frame_id;
+    ocm.orientation.w = current_pose.pose.orientation.w;
+    ocm.orientation.x = current_pose.pose.orientation.x;
+    ocm.orientation.y = current_pose.pose.orientation.y;
+    ocm.orientation.z = current_pose.pose.orientation.z;
+    ocm.absolute_x_axis_tolerance = 0.01;
+    ocm.absolute_y_axis_tolerance = 0.01;
+    ocm.absolute_z_axis_tolerance = 0.01;
+    ocm.weight = 1.0;
+    moveit_msgs::Constraints constraints;
+    constraints.orientation_constraints.push_back(ocm);
+    //moveit_msgs::PositionConstraint pcm;
+    //pcm.link_name = move_group_.getEndEffectorLink();
+    move_group_.setPathConstraints(constraints);
+
+    while (ros::ok()) {
+      moveAlongCartesianPathInWorldCoords(waypoints, 0.01, 0, true, false);
+      std::reverse(waypoints.begin(), waypoints.end());
+    }
+  }
 };
 } // namespace hanoi
 
@@ -265,11 +313,18 @@ int main(int argc, char **argv)
   hanoi_robot.setTowerPose(0, tow0_pose);
   hanoi_robot.setTowerPose(1, tow1_pose);
   hanoi_robot.setTowerPose(2, tow2_pose);
+
+  //hanoi_robot.planAndMoveToBasePose();
+  //geometry_msgs::PoseStamped pose = hanoi_robot.getTowerPose(1);
+  //hanoi_robot.planAndMove(hanoi_robot.getTowerPose(0), true);
   //hanoi_robot.checkPoses();
   //return 0;
-  hanoi_robot.planAndMoveToBasePose();
+  //hanoi_robot.planAndMoveToBasePose();
   hanoi_robot.gripperInit();
   hanoi_robot.waitForApproval();
+  hanoi_robot.moveInACoolAndCoodUpwardAndDownwardMotion();
+  return 0;
+
   hanoi_robot.moveTower(3, 0, 2, 1);
   hanoi_robot.planAndMoveToBasePose(false);
   

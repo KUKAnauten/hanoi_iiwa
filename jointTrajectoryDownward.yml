@@ -1,0 +1,796 @@
+header: 
+  seq: 0
+  stamp: 0.000000000
+  frame_id: /world
+joint_names[]
+  joint_names[0]: iiwa_joint_1
+  joint_names[1]: iiwa_joint_2
+  joint_names[2]: iiwa_joint_3
+  joint_names[3]: iiwa_joint_4
+  joint_names[4]: iiwa_joint_5
+  joint_names[5]: iiwa_joint_6
+  joint_names[6]: iiwa_joint_7
+points[]
+  points[0]: 
+    positions[]
+      positions[0]: -0.381242
+      positions[1]: 0.787302
+      positions[2]: -0.12047
+      positions[3]: -0.533316
+      positions[4]: 0.0848563
+      positions[5]: 1.76389
+      positions[6]: -1.25428
+    velocities[]
+      velocities[0]: 0
+      velocities[1]: 0
+      velocities[2]: 0
+      velocities[3]: 0
+      velocities[4]: 0
+      velocities[5]: 0
+      velocities[6]: 0
+    accelerations[]
+      accelerations[0]: -0.0675746
+      accelerations[1]: 0
+      accelerations[2]: 0
+      accelerations[3]: 0
+      accelerations[4]: 0
+      accelerations[5]: 0
+      accelerations[6]: 0
+    effort[]
+    time_from_start: 0.000000000
+  points[1]: 
+    positions[]
+      positions[0]: -0.384305
+      positions[1]: 0.795257
+      positions[2]: -0.12005
+      positions[3]: -0.518132
+      positions[4]: 0.0859701
+      positions[5]: 1.80517
+      positions[6]: -1.25224
+    velocities[]
+      velocities[0]: 0.000603938
+      velocities[1]: -0.00716069
+      velocities[2]: -0.000455818
+      velocities[3]: -0.0645105
+      velocities[4]: -0.000490059
+      velocities[5]: 0.00117795
+      velocities[6]: 0.000240263
+    accelerations[]
+      accelerations[0]: 0.0794768
+      accelerations[1]: -0.247648
+      accelerations[2]: -0.0136555
+      accelerations[3]: -0.847616
+      accelerations[4]: -0.0308948
+      accelerations[5]: -1.00252
+      accelerations[6]: -0.0482669
+    effort[]
+    time_from_start: 0.301099381
+  points[2]: 
+    positions[]
+      positions[0]: -0.381558
+      positions[1]: 0.785426
+      positions[2]: -0.120607
+      positions[3]: -0.561435
+      positions[4]: 0.0848409
+      positions[5]: 1.77265
+      positions[6]: -1.25376
+    velocities[]
+      velocities[0]: 0.0166914
+      velocities[1]: -0.0563187
+      velocities[2]: -0.00308496
+      velocities[3]: -0.267982
+      velocities[4]: -0.00655745
+      velocities[5]: -0.20607
+      velocities[6]: -0.00916809
+    accelerations[]
+      accelerations[0]: 0.0601769
+      accelerations[1]: -0.176515
+      accelerations[2]: -0.00881
+      accelerations[3]: -1.00327
+      accelerations[4]: -0.0212817
+      accelerations[5]: -0.808035
+      accelerations[6]: -0.0324469
+    effort[]
+    time_from_start: 0.542411321
+  points[3]: 
+    positions[]
+      positions[0]: -0.379102
+      positions[1]: 0.777398
+      positions[2]: -0.121038
+      positions[3]: -0.601244
+      positions[4]: 0.083899
+      positions[5]: 1.74168
+      positions[6]: -1.2551
+    velocities[]
+      velocities[0]: 0.0245455
+      velocities[1]: -0.0786165
+      velocities[2]: -0.004046
+      velocities[3]: -0.401651
+      velocities[4]: -0.00903159
+      velocities[5]: -0.319271
+      velocities[6]: -0.0132834
+    accelerations[]
+      accelerations[0]: 0.0515303
+      accelerations[1]: -0.136158
+      accelerations[2]: -0.0037194
+      accelerations[3]: -0.914336
+      accelerations[4]: -0.0120768
+      accelerations[5]: -0.84871
+      accelerations[6]: -0.0253633
+    effort[]
+    time_from_start: 0.654072950
+  points[4]: 
+    positions[]
+      positions[0]: -0.376777
+      positions[1]: 0.770076
+      positions[2]: -0.121401
+      positions[3]: -0.639579
+      positions[4]: 0.0830729
+      positions[5]: 1.71069
+      positions[6]: -1.25635
+    velocities[]
+      velocities[0]: 0.0288481
+      velocities[1]: -0.0853071
+      velocities[2]: -0.00407024
+      velocities[3]: -0.484055
+      velocities[4]: -0.00971939
+      velocities[5]: -0.398517
+      velocities[6]: -0.0155148
+    accelerations[]
+      accelerations[0]: 0.0457155
+      accelerations[1]: 0.000805372
+      accelerations[2]: 0.00414224
+      accelerations[3]: -0.968665
+      accelerations[4]: -0.00238138
+      accelerations[5]: -0.970781
+      accelerations[6]: -0.0254542
+    effort[]
+    time_from_start: 0.739874857
+  points[5]: 
+    positions[]
+      positions[0]: -0.374693
+      positions[1]: 0.764269
+      positions[2]: -0.121667
+      positions[3]: -0.675076
+      positions[4]: 0.0824049
+      positions[5]: 1.68102
+      positions[6]: -1.25747
+    velocities[]
+      velocities[0]: 0.0295627
+      velocities[1]: -0.0766223
+      velocities[2]: -0.00334949
+      velocities[3]: -0.51222
+      velocities[4]: -0.00891629
+      velocities[5]: -0.435288
+      velocities[6]: -0.0160562
+    accelerations[]
+      accelerations[0]: -0.0312394
+      accelerations[1]: 0.258879
+      accelerations[2]: 0.0167941
+      accelerations[3]: 0.272293
+      accelerations[4]: 0.0267657
+      accelerations[5]: 0.0172975
+      accelerations[6]: 0.013099
+    effort[]
+    time_from_start: 0.807964086
+  points[6]: 
+    positions[]
+      positions[0]: -0.372822
+      positions[1]: 0.759809
+      positions[2]: -0.12185
+      positions[3]: -0.708092
+      positions[4]: 0.0818785
+      positions[5]: 1.65249
+      positions[6]: -1.2585
+    velocities[]
+      velocities[0]: 0.0263522
+      velocities[1]: -0.0574977
+      velocities[2]: -0.00218998
+      velocities[3]: -0.473034
+      velocities[4]: -0.00687893
+      velocities[5]: -0.415034
+      velocities[6]: -0.0146115
+    accelerations[]
+      accelerations[0]: -0.0640361
+      accelerations[1]: 0.309542
+      accelerations[2]: 0.0176815
+      accelerations[3]: 0.889342
+      accelerations[4]: 0.0337789
+      accelerations[5]: 0.58165
+      accelerations[6]: 0.0297624
+    effort[]
+    time_from_start: 0.873587043
+  points[7]: 
+    positions[]
+      positions[0]: -0.371136
+      positions[1]: 0.756532
+      positions[2]: -0.121961
+      positions[3]: -0.738959
+      positions[4]: 0.0814788
+      positions[5]: 1.62494
+      positions[6]: -1.25944
+    velocities[]
+      velocities[0]: 0.0220349
+      velocities[1]: -0.0380257
+      velocities[2]: -0.00110564
+      velocities[3]: -0.410939
+      velocities[4]: -0.00473214
+      velocities[5]: -0.372333
+      velocities[6]: -0.0126056
+    accelerations[]
+      accelerations[0]: -0.0588806
+      accelerations[1]: 0.246367
+      accelerations[2]: 0.0133085
+      accelerations[3]: 0.876185
+      accelerations[4]: 0.0274845
+      accelerations[5]: 0.630222
+      accelerations[6]: 0.0273484
+    effort[]
+    time_from_start: 0.943271403
+  points[8]: 
+    positions[]
+      positions[0]: -0.369616
+      positions[1]: 0.754313
+      positions[2]: -0.122008
+      positions[3]: -0.76793
+      positions[4]: 0.0811938
+      positions[5]: 1.59823
+      positions[6]: -1.26033
+    velocities[]
+      velocities[0]: 0.0180514
+      velocities[1]: -0.0219571
+      velocities[2]: -0.000251864
+      velocities[3]: -0.35069
+      velocities[4]: -0.00292871
+      velocities[5]: -0.328147
+      velocities[6]: -0.0107647
+    accelerations[]
+      accelerations[0]: -0.0455103
+      accelerations[1]: 0.175541
+      accelerations[2]: 0.00912914
+      accelerations[3]: 0.701349
+      accelerations[4]: 0.0198522
+      accelerations[5]: 0.525604
+      accelerations[6]: 0.0209066
+    effort[]
+    time_from_start: 1.019728438
+  points[9]: 
+    positions[]
+      positions[0]: -0.368244
+      positions[1]: 0.753053
+      positions[2]: -0.121999
+      positions[3]: -0.795206
+      positions[4]: 0.0810136
+      positions[5]: 1.57226
+      positions[6]: -1.26117
+    velocities[]
+      velocities[0]: 0.0136381
+      velocities[1]: -0.00913651
+      velocities[2]: 0.000334744
+      velocities[3]: -0.276216
+      velocities[4]: -0.00143744
+      velocities[5]: -0.266564
+      velocities[6]: -0.00854138
+    accelerations[]
+      accelerations[0]: -0.0525395
+      accelerations[1]: 0.117112
+      accelerations[2]: 0.00445917
+      accelerations[3]: 0.941192
+      accelerations[4]: 0.0140865
+      accelerations[5]: 0.822812
+      accelerations[6]: 0.0281235
+    effort[]
+    time_from_start: 1.104315615
+  points[10]: 
+    positions[]
+      positions[0]: -0.367007
+      positions[1]: 0.752675
+      positions[2]: -0.121937
+      positions[3]: -0.820944
+      positions[4]: 0.0809302
+      positions[5]: 1.54696
+      positions[6]: -1.26197
+    velocities[]
+      velocities[0]: 0.00986888
+      velocities[1]: 0.00625994
+      velocities[2]: 0.00100163
+      velocities[3]: -0.216318
+      velocities[4]: -0.00014505
+      velocities[5]: -0.21558
+      velocities[6]: -0.00683973
+    accelerations[]
+      accelerations[0]: -0.0285671
+      accelerations[1]: 0.231856
+      accelerations[2]: 0.0107673
+      accelerations[3]: 0.328485
+      accelerations[4]: 0.0144352
+      accelerations[5]: 0.253973
+      accelerations[6]: 0.00769546
+    effort[]
+    time_from_start: 1.216229881
+  points[11]: 
+    positions[]
+      positions[0]: -0.366534
+      positions[1]: 0.753541
+      positions[2]: -0.121858
+      positions[3]: -0.831979
+      positions[4]: 0.080955
+      positions[5]: 1.53579
+      positions[6]: -1.26233
+    velocities[]
+      velocities[0]: 0.00999117
+      velocities[1]: 0.0108393
+      velocities[2]: 0.00134353
+      velocities[3]: -0.225787
+      velocities[4]: 0.000340473
+      velocities[5]: -0.229879
+      velocities[6]: -0.00721999
+    accelerations[]
+      accelerations[0]: 0.0509375
+      accelerations[1]: -0.196838
+      accelerations[2]: -0.00411802
+      accelerations[3]: -0.899117
+      accelerations[4]: -0.00446479
+      accelerations[5]: -0.966403
+      accelerations[6]: -0.0272218
+    effort[]
+    time_from_start: 1.270682695
+  points[12]: 
+    positions[]
+      positions[0]: -0.365987
+      positions[1]: 0.753821
+      positions[2]: -0.121798
+      positions[3]: -0.84404
+      positions[4]: 0.0809659
+      positions[5]: 1.52345
+      positions[6]: -1.26271
+    velocities[]
+      velocities[0]: 0.0103719
+      velocities[1]: 0.0117439
+      velocities[2]: 0.00149644
+      velocities[3]: -0.236203
+      velocities[4]: 0.000607539
+      velocities[5]: -0.244009
+      velocities[6]: -0.00760369
+    accelerations[]
+      accelerations[0]: -0.0380179
+      accelerations[1]: 0.244079
+      accelerations[2]: 0.0105857
+      accelerations[3]: 0.519969
+      accelerations[4]: 0.0156185
+      accelerations[5]: 0.438877
+      accelerations[6]: 0.012948
+    effort[]
+    time_from_start: 1.319136209
+  points[13]: 
+    positions[]
+      positions[0]: -0.36552
+      positions[1]: 0.754695
+      positions[2]: -0.121711
+      positions[3]: -0.855071
+      positions[4]: 0.0810148
+      positions[5]: 1.51193
+      positions[6]: -1.26307
+    velocities[]
+      velocities[0]: 0.0106602
+      velocities[1]: 0.0123009
+      velocities[2]: 0.00164075
+      velocities[3]: -0.244577
+      velocities[4]: 0.000912807
+      velocities[5]: -0.256654
+      velocities[6]: -0.00793195
+    accelerations[]
+      accelerations[0]: 0.0514957
+      accelerations[1]: -0.228805
+      accelerations[2]: -0.00484317
+      accelerations[3]: -0.891661
+      accelerations[4]: -0.00324126
+      accelerations[5]: -0.988364
+      accelerations[6]: -0.0272658
+    effort[]
+    time_from_start: 1.368497516
+  points[14]: 
+    positions[]
+      positions[0]: -0.364983
+      positions[1]: 0.755007
+      positions[2]: -0.121642
+      positions[3]: -0.867092
+      positions[4]: 0.0810526
+      positions[5]: 1.49926
+      positions[6]: -1.26346
+    velocities[]
+      velocities[0]: 0.0115672
+      velocities[1]: 0.0192835
+      velocities[2]: 0.0021817
+      velocities[3]: -0.273526
+      velocities[4]: 0.00156121
+      velocities[5]: -0.291953
+      velocities[6]: -0.00900173
+    accelerations[]
+      accelerations[0]: -0.0150636
+      accelerations[1]: 0.600221
+      accelerations[2]: 0.0317438
+      accelerations[3]: -0.380601
+      accelerations[4]: 0.0351129
+      accelerations[5]: -0.577336
+      accelerations[6]: -0.0205758
+    effort[]
+    time_from_start: 1.413744471
+  points[15]: 
+    positions[]
+      positions[0]: -0.364563
+      positions[1]: 0.75619
+      positions[2]: -0.121536
+      positions[3]: -0.877602
+      positions[4]: 0.081138
+      positions[5]: 1.48791
+      positions[6]: -1.26381
+    velocities[]
+      velocities[0]: 0.0108495
+      velocities[1]: 0.0231106
+      velocities[2]: 0.00239658
+      velocities[3]: -0.263641
+      velocities[4]: 0.00198078
+      velocities[5]: -0.285795
+      velocities[6]: -0.00879749
+    accelerations[]
+      accelerations[0]: -0.0194218
+      accelerations[1]: -0.40919
+      accelerations[2]: -0.0210449
+      accelerations[3]: 0.847536
+      accelerations[4]: -0.0145912
+      accelerations[5]: 0.863505
+      accelerations[6]: 0.0300482
+    effort[]
+    time_from_start: 1.451096058
+  points[16]: 
+    positions[]
+      positions[0]: -0.364078
+      positions[1]: 0.756865
+      positions[2]: -0.121445
+      positions[3]: -0.889011
+      positions[4]: 0.0812157
+      positions[5]: 1.47549
+      positions[6]: -1.26419
+    velocities[]
+      velocities[0]: 0.00897715
+      velocities[1]: 0.0223057
+      velocities[2]: 0.00223495
+      velocities[3]: -0.222947
+      velocities[4]: 0.00204822
+      velocities[5]: -0.245674
+      velocities[6]: -0.00754575
+    accelerations[]
+      accelerations[0]: -0.0608859
+      accelerations[1]: 0.322451
+      accelerations[2]: 0.0115895
+      accelerations[3]: 0.953295
+      accelerations[4]: 0.0154918
+      accelerations[5]: 0.915661
+      accelerations[6]: 0.0258642
+    effort[]
+    time_from_start: 1.497492711
+  points[17]: 
+    positions[]
+      positions[0]: -0.363703
+      positions[1]: 0.758365
+      positions[2]: -0.12132
+      positions[3]: -0.89899
+      positions[4]: 0.0813365
+      positions[5]: 1.46433
+      positions[6]: -1.26454
+    velocities[]
+      velocities[0]: 0.0067262
+      velocities[1]: 0.0221888
+      velocities[2]: 0.00202944
+      velocities[3]: -0.174188
+      velocities[4]: 0.00200821
+      velocities[5]: -0.195316
+      velocities[6]: -0.00601184
+    accelerations[]
+      accelerations[0]: -0.0256102
+      accelerations[1]: -0.256965
+      accelerations[2]: -0.0158014
+      accelerations[3]: 0.841791
+      accelerations[4]: -0.0134673
+      accelerations[5]: 0.923447
+      accelerations[6]: 0.0297201
+    effort[]
+    time_from_start: 1.547386913
+  points[18]: 
+    positions[]
+      positions[0]: -0.363271
+      positions[1]: 0.759406
+      positions[2]: -0.121207
+      positions[3]: -0.909785
+      positions[4]: 0.0814526
+      positions[5]: 1.45218
+      positions[6]: -1.26491
+    velocities[]
+      velocities[0]: 0.00455005
+      velocities[1]: 0.0157458
+      velocities[2]: 0.00145931
+      velocities[3]: -0.119283
+      velocities[4]: 0.00153175
+      velocities[5]: -0.135746
+      velocities[6]: -0.00417032
+    accelerations[]
+      accelerations[0]: -0.0312942
+      accelerations[1]: 0.0323107
+      accelerations[2]: -0.00192652
+      accelerations[3]: 0.654589
+      accelerations[4]: -0.00142946
+      accelerations[5]: 0.703238
+      accelerations[6]: 0.0209301
+    effort[]
+    time_from_start: 1.620140763
+  points[19]: 
+    positions[]
+      positions[0]: -0.362939
+      positions[1]: 0.76121
+      positions[2]: -0.121063
+      positions[3]: -0.919257
+      positions[4]: 0.0816068
+      positions[5]: 1.44121
+      positions[6]: -1.26525
+    velocities[]
+      velocities[0]: 0.0045868
+      velocities[1]: 0.0194824
+      velocities[2]: 0.00173178
+      velocities[3]: -0.125225
+      velocities[4]: 0.00192632
+      velocities[5]: -0.145552
+      velocities[6]: -0.00448298
+    accelerations[]
+      accelerations[0]: 0.0338346
+      accelerations[1]: 0.0545198
+      accelerations[2]: 0.00848672
+      accelerations[3]: -0.830333
+      accelerations[4]: 0.0108569
+      accelerations[5]: -0.973162
+      accelerations[6]: -0.0294566
+    effort[]
+    time_from_start: 1.725168791
+  points[20]: 
+    positions[]
+      positions[0]: -0.362556
+      positions[1]: 0.762599
+      positions[2]: -0.12093
+      positions[3]: -0.929474
+      positions[4]: 0.0817588
+      positions[5]: 1.42931
+      positions[6]: -1.26561
+    velocities[]
+      velocities[0]: 0.0062074
+      velocities[1]: 0.033914
+      velocities[2]: 0.00283037
+      velocities[3]: -0.178861
+      velocities[4]: 0.00323138
+      velocities[5]: -0.211921
+      velocities[6]: -0.00655819
+    accelerations[]
+      accelerations[0]: 0.00706297
+      accelerations[1]: 0.444045
+      accelerations[2]: 0.0271048
+      accelerations[3]: -0.680834
+      accelerations[4]: 0.0310018
+      accelerations[5]: -0.926287
+      accelerations[6]: -0.030465
+    effort[]
+    time_from_start: 1.788919218
+  points[21]: 
+    positions[]
+      positions[0]: -0.362264
+      positions[1]: 0.764696
+      positions[2]: -0.120767
+      positions[3]: -0.938464
+      positions[4]: 0.0819445
+      positions[5]: 1.41851
+      positions[6]: -1.26595
+    velocities[]
+      velocities[0]: 0.00719019
+      velocities[1]: 0.0433162
+      velocities[2]: 0.00359632
+      velocities[3]: -0.21294
+      velocities[4]: 0.00423215
+      velocities[5]: -0.25632
+      velocities[6]: -0.00795257
+    accelerations[]
+      accelerations[0]: 0.0359548
+      accelerations[1]: -0.124233
+      accelerations[2]: 0.00115854
+      accelerations[3]: -0.704593
+      accelerations[4]: 0.00700164
+      accelerations[5]: -0.869158
+      accelerations[6]: -0.0255871
+    effort[]
+    time_from_start: 1.834448152
+  points[22]: 
+    positions[]
+      positions[0]: -0.361927
+      positions[1]: 0.766414
+      positions[2]: -0.120614
+      positions[3]: -0.948135
+      positions[4]: 0.0821302
+      positions[5]: 1.40685
+      positions[6]: -1.26631
+    velocities[]
+      velocities[0]: 0.00701906
+      velocities[1]: 0.0487155
+      velocities[2]: 0.00396846
+      velocities[3]: -0.216192
+      velocities[4]: 0.00476802
+      velocities[5]: -0.264876
+      velocities[6]: -0.00824764
+    accelerations[]
+      accelerations[0]: -0.0456751
+      accelerations[1]: 0.386349
+      accelerations[2]: 0.0164786
+      accelerations[3]: 0.58108
+      accelerations[4]: 0.0181598
+      accelerations[5]: 0.500825
+      accelerations[6]: 0.012691
+    effort[]
+    time_from_start: 1.876788473
+  points[23]: 
+    positions[]
+      positions[0]: -0.361673
+      positions[1]: 0.768791
+      positions[2]: -0.120434
+      positions[3]: -0.956664
+      positions[4]: 0.0823455
+      positions[5]: 1.39622
+      positions[6]: -1.26664
+    velocities[]
+      velocities[0]: 0.00576365
+      velocities[1]: 0.0472511
+      velocities[2]: 0.003759
+      velocities[3]: -0.186779
+      velocities[4]: 0.00458805
+      velocities[5]: -0.233142
+      velocities[6]: -0.0072994
+    accelerations[]
+      accelerations[0]: -0.0122955
+      accelerations[1]: -0.400564
+      accelerations[2]: -0.023223
+      accelerations[3]: 0.717703
+      accelerations[4]: -0.0234689
+      accelerations[5]: 0.885123
+      accelerations[6]: 0.0284463
+    effort[]
+    time_from_start: 1.918604044
+  points[24]: 
+    positions[]
+      positions[0]: -0.361378
+      positions[1]: 0.770824
+      positions[2]: -0.120261
+      positions[3]: -0.965818
+      positions[4]: 0.0825629
+      positions[5]: 1.38478
+      positions[6]: -1.267
+    velocities[]
+      velocities[0]: 0.00495863
+      velocities[1]: 0.0459208
+      velocities[2]: 0.003627
+      velocities[3]: -0.167541
+      velocities[4]: 0.00450283
+      velocities[5]: -0.213185
+      velocities[6]: -0.00670415
+    accelerations[]
+      accelerations[0]: -0.0198589
+      accelerations[1]: 0.321378
+      accelerations[2]: 0.0164976
+      accelerations[3]: 0.0797466
+      accelerations[4]: 0.0185464
+      accelerations[5]: -0.0482236
+      accelerations[6]: -0.00334491
+    effort[]
+    time_from_start: 1.972581554
+  points[25]: 
+    positions[]
+      positions[0]: -0.361161
+      positions[1]: 0.773471
+      positions[2]: -0.120063
+      positions[3]: -0.973904
+      positions[4]: 0.0828062
+      positions[5]: 1.3743
+      positions[6]: -1.26733
+    velocities[]
+      velocities[0]: 0.00477424
+      velocities[1]: 0.0504155
+      velocities[2]: 0.00394428
+      velocities[3]: -0.169328
+      velocities[4]: 0.00495868
+      velocities[5]: -0.219491
+      velocities[6]: -0.006943
+    accelerations[]
+      accelerations[0]: 0.0131952
+      accelerations[1]: -0.152422
+      accelerations[2]: -0.00432318
+      accelerations[3]: -0.155213
+      accelerations[4]: -0.00084833
+      accelerations[5]: -0.204972
+      accelerations[6]: -0.00618319
+    effort[]
+    time_from_start: 2.021442752
+  points[26]: 
+    positions[]
+      positions[0]: -0.360906
+      positions[1]: 0.775804
+      positions[2]: -0.119871
+      positions[3]: -0.982566
+      positions[4]: 0.0830531
+      positions[5]: 1.36307
+      positions[6]: -1.26769
+    velocities[]
+      velocities[0]: 0.00410135
+      velocities[1]: 0.0479461
+      velocities[2]: 0.00373982
+      velocities[3]: -0.151414
+      velocities[4]: 0.00475116
+      velocities[5]: -0.199672
+      velocities[6]: -0.00634518
+    accelerations[]
+      accelerations[0]: -0.0366338
+      accelerations[1]: 0.0476125
+      accelerations[2]: -0.00357844
+      accelerations[3]: 0.797553
+      accelerations[4]: -0.00684039
+      accelerations[5]: 0.912511
+      accelerations[6]: 0.0275253
+    effort[]
+    time_from_start: 2.071460643
+  points[27]: 
+    positions[]
+      positions[0]: -0.360722
+      positions[1]: 0.778713
+      positions[2]: -0.119656
+      positions[3]: -0.990225
+      positions[4]: 0.0833228
+      positions[5]: 1.35274
+      positions[6]: -1.26802
+    velocities[]
+      velocities[0]: 0.00226065
+      velocities[1]: 0.0331818
+      velocities[2]: 0.00250871
+      velocities[3]: -0.0915707
+      velocities[4]: 0.00317949
+      velocities[5]: -0.12342
+      velocities[6]: -0.00395095
+    accelerations[]
+      accelerations[0]: -0.0158642
+      accelerations[1]: -0.302775
+      accelerations[2]: -0.0213661
+      accelerations[3]: 0.718015
+      accelerations[4]: -0.0261086
+      accelerations[5]: 0.968229
+      accelerations[6]: 0.0309801
+    effort[]
+    time_from_start: 2.130530618
+  points[28]: 
+    positions[]
+      positions[0]: -0.360505
+      positions[1]: 0.781335
+      positions[2]: -0.119445
+      positions[3]: -0.998415
+      positions[4]: 0.0835976
+      positions[5]: 1.34171
+      positions[6]: -1.26837
+    velocities[]
+      velocities[0]: 0
+      velocities[1]: 0
+      velocities[2]: 0
+      velocities[3]: 0
+      velocities[4]: 0
+      velocities[5]: 0
+      velocities[6]: 0
+    accelerations[]
+      accelerations[0]: -0.0185326
+      accelerations[1]: -0.223576
+      accelerations[2]: -0.0179603
+      accelerations[3]: 0.698437
+      accelerations[4]: -0.0234348
+      accelerations[5]: 0.941024
+      accelerations[6]: 0.0301348
+    effort[]
+    time_from_start: 2.283668551
