@@ -78,6 +78,7 @@ public:
 
     std::string movegroup_name ="manipulator";
     move_group_.setPlannerId(movegroup_name+"[RRTConnectkConfigDefault]");
+
   }
 
   void setTowerPose(int index, const std::vector<double>& pose) {
@@ -110,7 +111,7 @@ public:
     assert(index >= 0 && index <= 2);
     return tower_poses_[index];
   }
-  
+
   void gripperInit() {
     ROS_INFO("Initializing gripper...");
     gripper.setInitialization(INIT_ACTIVATION);
@@ -187,7 +188,7 @@ public:
     tower_nSlices_[from]--;
 
     pose_above_from = tower_poses_[from];
-    pose_above_from.pose.position.z += 0.001;//0.133;
+    pose_above_from.pose.position.z += 0.133;
     publishPoseGoalLinear(pose_above_from);
 
     waypoints.clear();
@@ -342,7 +343,7 @@ int main(int argc, char **argv)
 
   hanoi_robot.moveTower(3, 0, 2, 1, true);
   hanoi_robot.planAndMoveToBasePose(false);
-  
+
   ros::shutdown();
   return 0;
 }
