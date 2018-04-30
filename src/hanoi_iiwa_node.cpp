@@ -78,7 +78,6 @@ public:
 
     std::string movegroup_name ="manipulator";
     move_group_.setPlannerId(movegroup_name+"[RRTConnectkConfigDefault]");
-
   }
 
   void setTowerPose(int index, const std::vector<double>& pose) {
@@ -143,7 +142,7 @@ public:
   }
 
   void gripperOpen() {
-    gripper.setRawPosition(45);
+    gripper.setRawPosition(35);
     gripper.write();
     waitForGripper();
   }
@@ -154,10 +153,10 @@ public:
       pose.pose.position.z += 0.13;
       planAndMove(pose, true);
 
-      pose.pose.position.z -= 0.13;
+      pose.pose.position.z -= 0.125;
       planAndMove(pose, true);
 
-      pose.pose.position.z += 0.13;
+      pose.pose.position.z += 0.125;
       planAndMove(pose, true);
     }
   }
@@ -175,6 +174,31 @@ public:
     assert(from >= 0 && from <= 2);
     assert(to >= 0 && to <= 2);
 
+    geometry_msgs::PoseStamped target_pose_above = tower_poses_[from];
+    target_pose_above.pose.position.z += 0.153;
+    planAndMove(target_pose_above, approvalRequired);
+
+    geometry_msgs::PoseStamped target_pose = tower_poses_[from];
+    tower_nSlices_[from]--;
+    target_pose.pose.position.z += tower_nSlices_[from] * slice_height_;
+    publishPoseGoalLinear(target_pose);
+    gripperClose();
+
+    publishPoseGoalLinear(target_pose_above);
+
+    target_pose_above = tower_poses_[to];
+    target_pose_above.pose.position.z += 0.153;
+    planAndMove(target_pose_above, approvalRequired);
+
+    target_pose_above.pose.position.z -= 0.04;
+    publishPoseGoalLinear(target_pose_above);
+    gripperOpen();
+
+    target_pose_above.pose.position.z += 0.04;
+    publishPoseGoalLinear(target_pose_above);
+    tower_nSlices_[to]++;
+
+    /**
     std::vector<geometry_msgs::Pose> waypoints;
     geometry_msgs::PoseStamped pose_above_from = tower_poses_[from];
     pose_above_from.pose.position.z += 0.133;
@@ -208,6 +232,7 @@ public:
     planAndMove(pose_to, approvalRequired);
 
     tower_nSlices_[to]++;
+    */
   }
 
   void moveTower(int height, int from, int to, int with, bool approvalRequired = true) {
@@ -308,21 +333,22 @@ int main(int argc, char **argv)
 
   geometry_msgs::PoseStamped tow0_pose;
   tow0_pose.header.frame_id = "world";
-  tow0_pose.pose.position.x = 0.634 + 0.072;
-  tow0_pose.pose.position.y = -0.283443 + 0.647;
-  tow0_pose.pose.position.z = 0.985;
-  tow0_pose.pose.orientation.x = 0.963151;
-  tow0_pose.pose.orientation.y = 0.26867;
-  tow0_pose.pose.orientation.z = 0.00855197;
-  tow0_pose.pose.orientation.w = 0.0091728;
+  tow0_pose.pose.position.x = 0.634 + 0.075;
+  tow0_pose.pose.position.y = -0.283443 + 0.638;
+  tow0_pose.pose.position.z = 0.9865;// - 0.027;
+  
+  tow0_pose.pose.orientation.x = 0.0;
+  tow0_pose.pose.orientation.y = 1.0;
+  tow0_pose.pose.orientation.z = 0.0;
+  tow0_pose.pose.orientation.w = 0.0;
 
   geometry_msgs::PoseStamped tow1_pose = tow0_pose;
-  tow1_pose.pose.position.x -= 0.04;
-  tow1_pose.pose.position.y += 0.28;
+  tow1_pose.pose.position.x -= 0.045;
+  tow1_pose.pose.position.y += 0.285;
 
   geometry_msgs::PoseStamped tow2_pose = tow1_pose;
-  tow2_pose.pose.position.x -= 0.32;
-  tow2_pose.pose.position.y -= 0.01;
+  tow2_pose.pose.position.x -= 0.313;
+  tow2_pose.pose.position.y -= 0.001;
 
   hanoi::HanoiRobot hanoi_robot(&node_handle, "manipulator", base_pose_jointSpace, 3, 0.01);
   hanoi_robot.setTowerPose(0, tow0_pose);
@@ -335,13 +361,12 @@ int main(int argc, char **argv)
   //hanoi_robot.checkPoses();
   //return 0;
   //while (!hanoi_robot.getMFButtonState()) {};
+  //hanoi_robot.checkPoses();
   hanoi_robot.planAndMoveToBasePose();
   hanoi_robot.gripperInit();
   hanoi_robot.waitForApproval();
-  //hanoi_robot.moveInACoolAndCoodUpwardAndDownwardMotion();
-  //return 0;
 
-  hanoi_robot.moveTower(3, 0, 2, 1, true);
+  hanoi_robot.moveTower(3, 0, 2, 1, false);
   hanoi_robot.planAndMoveToBasePose(false);
 
   ros::shutdown();
